@@ -6,6 +6,11 @@ import { HeadlessScraperConfig } from "~/config";
 import helmet from "helmet";
 import { Logger } from "winston";
 import { container } from "~/container";
+import { v1 } from "./api/v1";
+import morgan from "morgan";
+import { stream } from "../logging";
+import { httpLogger } from "~/modules/user/interfaces/middleware/httpLogger";
+import { scopePerRequest } from "awilix-express";
 
 export class Application {
   protected app: express.Application;
@@ -16,12 +21,16 @@ export class Application {
     this.app = express();
     this.config = config;
     this.logger = logger;
+    // this.app.use(morgan("short", { stream }));
+    this.app.use(scopePerRequest(container));
+    this.app.use(httpLogger);
     this.app.disable("x-powered-by");
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(cors());
     this.app.use(compression());
     this.app.use(helmet());
+    this.app.use("/v1", v1);
   }
 
   async start(): Promise<void> {

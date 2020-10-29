@@ -19,10 +19,11 @@
     "target": "es2019",
     "baseUrl": "./src",
     "paths": {
-      "*": ["node_modules/*"],
       "~/*": ["./*"]
     },
+    "resolveJsonModule": true,
+    "typeRoots": ["@types", "./node_modules/@types"]
   },
-  "include": ["src"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "**/__tests__", "dist"]
 }

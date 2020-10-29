@@ -4,8 +4,9 @@ const makeLogger = (options: winston.LoggerOptions = {}): winston.Logger => {
   const transports = makeTransports();
   const logger = winston.createLogger(<winston.LoggerOptions>{
     transports,
+    handleExceptions: true,
     exitOnError: false,
-    level: "verbose",
+    level: "debug",
     ...options,
   });
   return logger;
@@ -18,6 +19,9 @@ const formatters = winston.format.combine(
   }),
   winston.format.errors({ stack: true }),
   winston.format.printf((info) => {
+    if (info.method && info.url) {
+      return `[${info.timestamp}] http: ${info.method} ${info.url}`;
+    }
     if (typeof info.message === "object") {
       return `[${info.timestamp}] ${info.level}: ${JSON.stringify(
         info.message,
@@ -32,7 +36,6 @@ const formatters = winston.format.combine(
 const makeTransports = () => {
   return [
     new winston.transports.Console({
-      handleExceptions: true,
       format: formatters,
     }),
   ];

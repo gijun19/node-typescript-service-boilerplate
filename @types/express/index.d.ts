@@ -7,15 +7,6 @@ declare global {
       container: AwilixContainer<AppCradle>;
     }
   }
-
-  namespace NodeJS {
-    interface ProcessEnv {
-      PORT: string;
-      NODE_ENV: string;
-      DB_URL: string;
-      JWT_SECRET: string;
-    }
-  }
 }
 
 export {};

@@ -7,16 +7,18 @@ import {
 } from "awilix";
 import { config, HeadlessScraperConfig } from "./config";
 import { Application } from "~/core/infra/http/Application";
-import { makeLogger } from "./core/infra/logging/makeLogger";
 import winston from "winston";
 import { scopePerRequest } from "awilix-express";
-import { RequestHandler } from "express";
+import { Request, RequestHandler } from "express";
+import { logger } from "./core/infra/logging";
+import { httpLogger } from "./modules/user/interfaces/middleware/httpLogger";
 
 export interface AppCradle {
   app: Application;
   logger: winston.Logger;
   config: HeadlessScraperConfig;
   container: RequestHandler;
+  httpLogger: RequestHandler;
 }
 
 const container = createContainer<AppCradle>({
@@ -28,7 +30,7 @@ container
     app: asClass(Application).singleton(),
   })
   .register({
-    logger: asFunction(makeLogger).singleton(),
+    logger: asValue(logger),
   })
   .register({ config: asValue(config) });
 
@@ -40,7 +42,7 @@ container
  * Middlewares
  */
 container.register({
-  container: asValue(scopePerRequest(container)),
+  httpLogger: asFunction(httpLogger).singleton(),
 });
 // container
 //   .register({
