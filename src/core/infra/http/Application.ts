@@ -7,8 +7,6 @@ import helmet from "helmet";
 import { Logger } from "winston";
 import { container } from "~/container";
 import { v1 } from "./api/v1";
-import morgan from "morgan";
-import { stream } from "../logging";
 import { httpLogger } from "~/modules/user/interfaces/middleware/httpLogger";
 import { scopePerRequest } from "awilix-express";
 
